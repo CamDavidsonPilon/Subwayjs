@@ -1,7 +1,7 @@
 //subway.js
 // Author: Cameron Davidson-Pilon
 // Date: July, 2012
-// License: 
+// License: MIT License
 
 
 // Dependencies: 
@@ -45,8 +45,7 @@ function Line( color, name ){
 }
 	
 	
-		
-function SingleNode( line, position, neighbours, name, url, name_offset){
+function SingleNode( line, position, neighbours, name, url, name_offset, name_angle){
     // the Node object is a non transitionay subway stop
     //      line: the line the node lies on.
     //      position: the coordinates on the canvas as Point class object.
@@ -58,6 +57,7 @@ function SingleNode( line, position, neighbours, name, url, name_offset){
     //      name_offset: the amount to move the display named away from the center of the station. It must be a paper.js Point
     //                   object. ie. new Point( 10, 10) will position the top left corner of the text 10 pixels right and 
     //                  10 pixels below the center of the station.
+    //      name_angle: the angle the name to be at. Enter it in counterclockwise radians.
     
     this.line = line;
     this.position = position;
@@ -81,7 +81,7 @@ function SingleNode( line, position, neighbours, name, url, name_offset){
 	this.text.content = this.name;
     this.text.characterStyle = CHARACTER_STYLE;
 	// To rotate names, uncomment below. 
-    //this.text.rotate( <the degrees to move by> );
+    this.text.rotate( -name_angle, this.position );
 
 	
     // add it to the line.
@@ -89,7 +89,7 @@ function SingleNode( line, position, neighbours, name, url, name_offset){
     
     }
     
-function TransitionNode( line, line2, angle, position, neighbours, name, url,name_offset){
+function TransitionNode( line, line2, angle, position, neighbours, name, url,name_offset, name_angle){
     // the Node object is a non transitionay subway stop
     //      line: the primary line the node lies on.
     //      line2: the secondary line the node lies on.
@@ -103,6 +103,8 @@ function TransitionNode( line, line2, angle, position, neighbours, name, url,nam
     //      name_offset: the amount to move the display named away from the center of the station. It must be a paper.js Point
     //                   object. ie. new Point( 10, 10) will position the top left corner of the text 10 pixels right and 
     //                  10 pixels below the center of the station.
+    //      name_angle: the angle the name to be at. Enter it in counterclockwise radians.
+
     
 	STROKE_WIDTH = 2; //this two control the offset and appearance of the 'underneath node'
 	CIRCLE_DIST = 16;
@@ -123,14 +125,12 @@ function TransitionNode( line, line2, angle, position, neighbours, name, url,nam
 	this.onkeydownNode = onkeydownNode;
 	this.emptyNode = function(){
 			this.innerc.remove()
-			removeText(this.name);
 	}
 	//this.fillNode = fillNode;
 	this.fillNode = function(){
 		    this.innerc = new Path.Circle( this.position, CUR_NODE_SIZE);
 			this.innerc.fillColor = 'black';
-            addText(this.name);
-            window.location.href=this.url;
+//            window.location.href=this.url;
 	} 
 	
 	this.text = new PointText( this.position + name_offset );
@@ -139,7 +139,7 @@ function TransitionNode( line, line2, angle, position, neighbours, name, url,nam
 
     this.text.characterStyle = CHARACTER_STYLE;
     // uncomment below to rotate.
-    //this.text.rotate( -45);
+    this.text.rotate( -name_angle, this.position);
 	
 	//generate visual shapes
 	var c2 = new Path.Circle( this.positionAlt , NODE_SIZE);
@@ -159,7 +159,7 @@ function TransitionNode( line, line2, angle, position, neighbours, name, url,nam
 
 	//add it the the lines.
 	this.line.path.add( this.position);
-	this.line2.path.add(this.position);
+	this.line2.path.add(this.positionAlt);
 	
 	
 	}
@@ -196,7 +196,7 @@ function onKeyDown(event){
 		}
 }
  
-function onkeydownNode( keydown ){\
+function onkeydownNode( keydown ){
     for ( key in this.neighbours ){
         if (key == keydown){
             current_position.emptyNode();
