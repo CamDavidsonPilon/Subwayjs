@@ -23,7 +23,7 @@ var LINE_WIDTH = 23; //width of the inter-station lines.
 // fonts
 var FONT_SIZE = 16;
 var TEXT_FONT = 'Arial';
-var FONT_COLOR = 'white';
+var FONT_COLOR = 'black';
 
 var CHARACTER_STYLE = {
 		fillColor: FONT_COLOR,
@@ -66,7 +66,6 @@ function SingleNode( line, position, neighbours, name, url, name_offset, name_an
     
     this['line'] = line;
     this['position'] = position;
-    this['neighbours'] = neighbours;
 	this['name'] = name;
 	this['url'] = url;
     this['name_angle'] = name_angle;
@@ -140,7 +139,7 @@ function TransitionNode( line, line2, angle, position, neighbours, name, url,nam
 	//Methods;
 	this.onkeydownNode = onkeydownNode;
 	this.emptyNode = function(){
-			this.innerc.fillColor = 'white';
+			this.innerc.fillColor = this['path']['color'];
 	}
 	this.fillNode = function(){
 			this.innerc.fillColor = 'black';
@@ -165,7 +164,7 @@ function TransitionNode( line, line2, angle, position, neighbours, name, url,nam
 	c1.fillColor = 'white';
 	c1.strokeColor = 'black';
 	this.innerc = new Path.Circle( this.position, CUR_NODE_SIZE);
-	innerc.fillColor = this.line.color;
+	this.innerc.fillColor = this.line.color;
 	
 
 	//add it the the lines.
@@ -191,28 +190,24 @@ function LegendItem( start, end, subwayLine ){
    
  
 function onKeyDown(event){
-    //this function fires when a key is pressed. This uses the shift-<direction> movement.
     var key = event.key;
-    if (shiftDown == 1){
-            if (key =='up' ){
-                current_position.onkeydownNode('N');}
-            else if (key =='left' ){
-                current_position.onkeydownNode('W');}
-            else if (key == 'right'){
-                current_position.onkeydownNode('E');}
-            else if (key == 'down'){
-                current_position.onkeydownNode('S');}
-    }
-    
-    if (key == 'shift'){
-        shiftDown = 1;
-    }
+    if ((key=="up" && shiftDown) || (key=="w" ) ){
+        current_position.onkeydownNode('N');}
+    else if ((key=="left" && shiftDown) || (key=="a" ) ){
+        current_position.onkeydownNode('W');}
+    else if ((key=="right" && shiftDown) || (key=="d" ) ){
+        current_position.onkeydownNode('E');}
+    else if ((key=="down" && shiftDown) || (key=="s" ) ){
+        current_position.onkeydownNode('S');}
+    //else if (key in oc(['enter', 'space']) ){
+	//	window.location.href=current_position.url;}
+    else if (key=="shift"){
+        shiftDown=1;}
 }
 
-
-function onKeyUp( event ){
-    if (event.key == 'shift'){
-        shiftDown = 0;
+function onKeyUp(event){
+    if (event.key == "shift"){
+        shiftDown=0;
         }
 }
 
@@ -278,6 +273,6 @@ function onFrame(event){
 
 }
 
-
+var shiftDown = 0;
 
 
