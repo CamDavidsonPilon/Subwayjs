@@ -1,4 +1,4 @@
-Subwayjs is a javascript module for creating an interactive subway system for you website. See www.camdp.com and www.camdp.com/ttc for an examples.
+Subwayjs is a javascript module for creating an interactive subway system for you website. See www.camdp.com/UWMetro and www.camdp.com/ttc for examples.
 The module relies on Paper.js (http://paperjs.org/download/). 
 
 To run, you'll need something that looks like this in your header:
